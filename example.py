@@ -7,7 +7,7 @@ def cb(m):
 
 
 async def main():
-    dmc = danmaku.DanmakuClient('https://douyu.com/9999', cb)
+    dmc = danmaku.DanmakuClient('https://www.douyu.com/9999', cb)
     await dmc.start()
 
 asyncio.run(main())

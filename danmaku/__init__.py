@@ -3,6 +3,7 @@ import re, asyncio, aiohttp
 from .config import VERSION
 from .bilibili import Bilibili
 from .douyu import Douyu
+from .huya import Huya
 
 
 __version__ = VERSION
@@ -23,7 +24,7 @@ class DanmakuClient:
             self.__url = 'http://' + url
         for u, s in {'douyu.com'         : Douyu,
                      'live.bilibili.com' : Bilibili,
-                     'huya.com'          : None,
+                     'huya.com'          : Huya,
                      'huomao.com'        : None, }.items() :
             if re.match(r'^(?:http[s]?://)?.*?%s/(.+?)$' % u, url):
                 self.__site = s
@@ -44,8 +45,8 @@ class DanmakuClient:
     async def heartbeats(self):
         while self.__stop != True:
             # print('heartbeat')
-            await self.__ws.send_bytes(self.__site.heartbeat)
             await asyncio.sleep(30)
+            await self.__ws.send_bytes(self.__site.heartbeat)
 
     async def fetch_danmaku(self):
         async for msg in self.__ws:
