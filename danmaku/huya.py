@@ -65,4 +65,4 @@ class Huya:
         else:
             msg = {'name': '', 'content': '', 'msg_type': 'other'}
         msgs.append(msg)
-        return msgs, b''
+        return msgs

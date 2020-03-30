@@ -34,4 +34,4 @@ class Douyu():
                 msgs.append(msg)
             except Exception as e:
                 pass
-        return msgs, b''
+        return msgs

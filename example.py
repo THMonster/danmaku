@@ -1,13 +1,18 @@
 import asyncio
 import danmaku
+import sys
 
-def cb(m):
-    if m['msg_type'] == 'danmaku':
-        print(f'[{m["name"]}]{m["content"]}')
+async def printer(q):
+    while True:
+        m = await q.get()
+        if m['msg_type'] == 'danmaku':
+            print(f'[{m["name"]}]{m["content"]}')
 
 
 async def main():
-    dmc = danmaku.DanmakuClient('https://www.douyu.com/9999', cb)
+    q = asyncio.Queue()
+    dmc = danmaku.DanmakuClient(sys.argv[1], q)
+    asyncio.create_task(printer(q))
     await dmc.start()
 
 asyncio.run(main())

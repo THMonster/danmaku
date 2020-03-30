@@ -50,11 +50,16 @@ class Bilibili:
                 msg = {}
                 if ops[i] == 5:
                     j = json.loads(d)
-                    msg['name'] = (j.get('info', ['','',['', '']])[2][1]
-                                   or j.get('data', {}).get('uname', ''))
-                    msg['content']  = j.get('info', ['', ''])[1]
                     msg['msg_type']  = {'SEND_GIFT': 'gift', 'DANMU_MSG': 'danmaku',
-                                        'WELCOME': 'enter'}.get(j.get('cmd'), 'other')
+                            'WELCOME': 'enter', 'NOTICE_MSG': 'broadcast'}.get(j.get('cmd'), 'other')
+                    if msg['msg_type'] == 'danmaku':
+                        msg['name'] = (j.get('info', ['','',['', '']])[2][1]
+                                   or j.get('data', {}).get('uname', ''))
+                        msg['content']  = j.get('info', ['', ''])[1]
+                    elif msg['msg_type'] == 'broadcast':
+                        msg['type'] = j.get('msg_type', 0)
+                        msg['roomid'] = j.get('real_roomid', 0)
+                        msg['content'] = j.get('msg_common', 'none')
                 else:
                     msg = {'name': '', 'content': '', 'msg_type': 'other'}
                 msgs.append(msg)
@@ -62,4 +67,4 @@ class Bilibili:
                 print(e)
                 pass
 
-        return msgs, data
+        return msgs
