@@ -1,7 +1,7 @@
-import json, re, select, random
+import json, re, select, random, traceback
 from struct import pack, unpack
 
-import asyncio, aiohttp
+import asyncio, aiohttp, zlib
 
 
 class Bilibili:
@@ -26,6 +26,7 @@ class Bilibili:
         return 'wss://broadcastlv.chat.bilibili.com/sub', reg_datas
 
     def decode_msg(data):
+        dm_list_compressed = []
         dm_list = []
         ops = []
         msgs = []
@@ -36,8 +37,11 @@ class Bilibili:
                 break
             if len(data) < packetLen:
                 break
-            ops.append(op)
-            dm_list.append(data[16:packetLen])
+            if ver == 1:
+                ops.append(op)
+                dm_list.append(data[16:packetLen])
+            elif ver == 2:
+                dm_list_compressed.append(data[16:packetLen])
             if len(data) == packetLen:
                 data = b''
                 break
@@ -45,6 +49,24 @@ class Bilibili:
                 data = data[packetLen:]
                 # print(ops)
                 # print(dm_list)
+
+        for dm in dm_list_compressed:
+            d = zlib.decompress(dm)
+            while True:
+                try:
+                    packetLen, headerLen, ver, op, seq = unpack('!IHHII', d[0:16])
+                except Exception as e:
+                    break
+                if len(d) < packetLen:
+                    break
+                ops.append(op)
+                dm_list.append(d[16:packetLen])
+                if len(d) == packetLen:
+                    d = b''
+                    break
+                else:
+                    d = d[packetLen:]
+
         for i, d in enumerate(dm_list):
             try:
                 msg = {}
@@ -60,11 +82,15 @@ class Bilibili:
                         msg['type'] = j.get('msg_type', 0)
                         msg['roomid'] = j.get('real_roomid', 0)
                         msg['content'] = j.get('msg_common', 'none')
+                        msg['raw'] = j
+                    else:
+                        msg['content'] = j
                 else:
-                    msg = {'name': '', 'content': '', 'msg_type': 'other'}
+                    msg = {'name': '', 'content': d, 'msg_type': 'other'}
                 msgs.append(msg)
             except Exception as e:
-                print(e)
+                # traceback.print_exc()
+                # print(e)
                 pass
 
         return msgs
