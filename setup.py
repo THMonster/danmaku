@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="danmaku",
-    version="0.2.1",
+    version="0.2.2",
     author="IsoaSFlus",
     author_email="me@isoasflus.com",
     description="A python package for getting danmaku of some streaming site",
