@@ -7,7 +7,7 @@
 
 ## 用法
 
-```
+```python3
 import asyncio
 import danmaku
 
