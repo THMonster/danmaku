@@ -30,6 +30,7 @@ class Bilibili:
         dm_list = []
         ops = []
         msgs = []
+        # print(data)
         while True:
             try:
                 packetLen, headerLen, ver, op, seq = unpack('!IHHII', data[0:16])
@@ -37,7 +38,7 @@ class Bilibili:
                 break
             if len(data) < packetLen:
                 break
-            if ver == 1:
+            if ver == 1 or ver == 0:
                 ops.append(op)
                 dm_list.append(data[16:packetLen])
             elif ver == 2:
@@ -47,8 +48,6 @@ class Bilibili:
                 break
             else:
                 data = data[packetLen:]
-                # print(ops)
-                # print(dm_list)
 
         for dm in dm_list_compressed:
             d = zlib.decompress(dm)
