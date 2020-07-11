@@ -54,9 +54,10 @@ class DanmakuClient:
                 ms = self.__site.decode_msg(msg.data)
                 for m in ms:
                     await self.__dm_queue.put(m)
-            await asyncio.sleep(1)
-            await self.init_ws()
-            await asyncio.sleep(1)
+            if self.__stop != True:
+                await asyncio.sleep(1)
+                await self.init_ws()
+                await asyncio.sleep(1)
 
     async def start(self):
         await self.init_ws()
@@ -64,3 +65,7 @@ class DanmakuClient:
             self.heartbeats(),
             self.fetch_danmaku(),
         )
+
+    async def stop(self):
+        self.__stop = True
+        await self.__hs.close()

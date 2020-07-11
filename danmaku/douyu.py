@@ -2,6 +2,15 @@ import json, re, select, random
 from struct import pack, unpack
 import asyncio, aiohttp
 
+color_tab = {
+    '2': '1e87f0',
+    '3': '7ac84b',
+    '4': 'ff7f00',
+    '6': 'ff69b4',
+    '5': '9b39f4',
+    '1': 'ff0000'
+}
+
 class Douyu():
     heartbeat = b'\x14\x00\x00\x00\x14\x00\x00\x00\xb1\x02\x00\x00\x74\x79\x70\x65\x40\x3d\x6d\x72\x6b\x6c\x2f\x00'
 
@@ -31,6 +40,7 @@ class Douyu():
                 msg['content'] = msg.get('txt', '')
                 msg['msg_type']  = {'dgb': 'gift', 'chatmsg': 'danmaku',
                                    'uenter': 'enter'}.get(msg['type'], 'other')
+                msg['color'] = color_tab.get(msg.get('col', '-1'), 'ffffff')
                 msgs.append(msg)
             except Exception as e:
                 pass

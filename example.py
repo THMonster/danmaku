@@ -5,9 +5,7 @@ import sys
 async def printer(q):
     while True:
         m = await q.get()
-        if m['msg_type'] == 'danmaku':
-            print(f'[{m["name"]}]{m["content"]}')
-
+        print(m)
 
 async def main():
     q = asyncio.Queue()

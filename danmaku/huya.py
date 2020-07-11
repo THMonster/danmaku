@@ -47,6 +47,9 @@ class Huya:
         class user(tarscore.struct):
             def readFrom(ios):
                 return ios.read(tarscore.string, 2, False).decode('utf8')
+        class dcolor(tarscore.struct):
+            def readFrom(ios):
+                return ios.read(tarscore.int32, 0, False)
 
         name = ''
         content = ''
@@ -59,9 +62,12 @@ class Huya:
                 ios = tarscore.TarsInputStream(ios.read(tarscore.bytes, 2, False))
                 name = ios.read(user, 0, False) # username
                 content = ios.read(tarscore.string, 3, False).decode('utf8') # content
+                color = ios.read(dcolor, 6, False) # danmaku color
+                if color == -1:
+                    color = 16777215
 
         if name != '':
-            msg = {'name': name, 'content': content, 'msg_type': 'danmaku'}
+            msg = {'name': name, 'color': f"{color:06x}", 'content': content, 'msg_type': 'danmaku'}
         else:
             msg = {'name': '', 'content': '', 'msg_type': 'other'}
         msgs.append(msg)

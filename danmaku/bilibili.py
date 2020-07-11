@@ -17,7 +17,7 @@ class Bilibili:
                 data = json.dumps({
                     'roomid': room_id,
                     'uid': int(1e14 + 2e14 * random.random()),
-                    'protover': 1
+                    'protover': 2
                 }, separators=(',', ':')).encode('ascii')
                 data = (pack('>i', len(data) + 16) + b'\x00\x10\x00\x01' +
                         pack('>i', 7) + pack('>i', 1) + data)
@@ -77,6 +77,7 @@ class Bilibili:
                         msg['name'] = (j.get('info', ['','',['', '']])[2][1]
                                    or j.get('data', {}).get('uname', ''))
                         msg['content']  = j.get('info', ['', ''])[1]
+                        msg['color'] = f"{j.get('info', [[0, 0, 0, 16777215]])[0][3]:06x}"
                     elif msg['msg_type'] == 'broadcast':
                         msg['type'] = j.get('msg_type', 0)
                         msg['roomid'] = j.get('real_roomid', 0)
