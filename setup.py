@@ -13,6 +13,10 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/IsoaSFlus/danmaku",
     packages=setuptools.find_packages(),
+    install_requires = [
+        'aiohttp',
+        'urllib3',
+    ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
