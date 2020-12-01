@@ -15,7 +15,6 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires = [
         'aiohttp',
-        'urllib3',
     ],
     classifiers=[
         "Programming Language :: Python :: 3",

@@ -1,4 +1,4 @@
-import json, re, select, random, traceback
+import json, re, select, random, traceback, urllib
 import asyncio, aiohttp
 
 # The core codes for YouTube support are basically from taizan-hokuto/pytchat
@@ -6,7 +6,6 @@ import asyncio, aiohttp
 headers = {
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36',
 }
-
 
 class Youtube:
     q = None
@@ -57,7 +56,6 @@ class Youtube:
 
     @classmethod
     async def get_chat_single(cls):
-        import urllib.parse
         msgs = []
         u = f'https://www.youtube.com/live_chat/get_live_chat?continuation={urllib.parse.quote(cls.ctn)}&pbj=1'
         async with cls.client.request('get', u, headers=headers) as resp:
