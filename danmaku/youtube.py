@@ -1,4 +1,4 @@
-import json, re, select, random, traceback, urllib
+import json, re, select, random, traceback, urllib, datetime, base64
 import asyncio, aiohttp
 
 # The core codes for YouTube support are basically from taizan-hokuto/pytchat
@@ -22,6 +22,7 @@ class Youtube:
         cls.url = url
         cls.client = client
         cls.stop = False
+        cls.key = "eW91dHViZWkvdjEvbGl2ZV9jaGF0L2dldF9saXZlX2NoYXQ/a2V5PUFJemFTeUFPX0ZKMlNscVU4UTRTVEVITEdDaWx3X1k5XzExcWNXOA=="
         await cls.get_url()
         while cls.stop == False:
             try:
@@ -29,7 +30,7 @@ class Youtube:
                 cls.ctn = liveparam.getparam(cls.vid, 1)
                 await cls.get_chat()
             except:
-                # traceback.print_exc()
+                traceback.print_exc()
                 await asyncio.sleep(1)
 
     @classmethod
@@ -51,17 +52,28 @@ class Youtube:
     async def get_room_info(cls):
         async with cls.client.request('get', cls.url) as resp:
             t = re.search(r'"gridVideoRenderer"((.(?!"gridVideoRenderer"))(?!"style":"UPCOMING"))+"label":"(LIVE|LIVE NOW|PREMIERING NOW)"([\s\S](?!"style":"UPCOMING"))+?("gridVideoRenderer"|</script>)', await resp.text()).group(0)
-            # t = re.search(r'("gridVideoRenderer"(.(?!"gridVideoRenderer"))+"label":"(LIVE|LIVE NOW|PREMIERING NOW)".+)', t).group(1) 
             cls.vid = re.search(r'"gridVideoRenderer".+?"videoId":"(.+?)"', t).group(1) 
+            # print(cls.vid)
 
     @classmethod
     async def get_chat_single(cls):
         msgs = []
-        u = f'https://www.youtube.com/live_chat/get_live_chat?continuation={urllib.parse.quote(cls.ctn)}&pbj=1'
-        async with cls.client.request('get', u, headers=headers) as resp:
+        data = {
+            "context": {
+                "client": {
+                    "visitorData": '',
+                    "userAgent": headers['user-agent'],
+                    "clientName": "WEB",
+                    "clientVersion": ''.join(("2.", (datetime.datetime.today() - datetime.timedelta(days=1)).strftime("%Y%m%d"), ".01.00")),
+                },
+            },
+            "continuation": cls.ctn,
+        }
+        u = f'https://www.youtube.com/{base64.b64decode(cls.key).decode("utf-8")}'
+        async with cls.client.request('post', u, headers=headers, json=data) as resp:
+            # print(await resp.text())
             j = await resp.json()
-            j = j['response']['continuationContents']
-            # print(j)
+            j = j['continuationContents']
             cont = j['liveChatContinuation']['continuations'][0]
             if cont is None:
                 raise Exception('No Continuation')
