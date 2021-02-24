@@ -75,13 +75,16 @@ class tarscore:
         pass
 
     @staticmethod
-    def mapclass(ktype, vtype): return util.mapclass(ktype, vtype)
+    def mapclass(ktype, vtype):
+        return util.mapclass(ktype, vtype)
 
     @staticmethod
-    def vctclass(vtype): return util.vectorclass(vtype)
+    def vctclass(vtype):
+        return util.vectorclass(vtype)
 
     @staticmethod
-    def printHex(buff): util.printHex(buff)
+    def printHex(buff):
+        util.printHex(buff)
 
 
 # 被用户引用

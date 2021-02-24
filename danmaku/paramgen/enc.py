@@ -1,12 +1,12 @@
 def vn(val):
     if val < 0:
         raise ValueError
-    buf = b''
+    buf = b""
     while val >> 7:
         m = val & 0xFF | 0x80
-        buf += m.to_bytes(1, 'big')
+        buf += m.to_bytes(1, "big")
         val >>= 7
-    buf += val.to_bytes(1, 'big')
+    buf += val.to_bytes(1, "big")
     return buf
 
 

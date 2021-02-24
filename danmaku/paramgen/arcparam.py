@@ -26,13 +26,13 @@ def _build(video_id, seektime, topchat_only, channel_id) -> str:
     s10 = enc.rs(10, enc.nm(4, 0))
     chattype = enc.rs(14, enc.nm(1, 4))
     s15 = enc.nm(15, 0)
-    entity = b''.join((header, timestamp, s6, s7, s8, s9, s10, chattype, s15))
+    entity = b"".join((header, timestamp, s6, s7, s8, s9, s10, chattype, s15))
     continuation = enc.rs(156074452, entity)
     return quote(b64enc(continuation).decode())
 
 
-def getparam(video_id, seektime=0, topchat_only=False, channel_id='') -> str:
-    '''
+def getparam(video_id, seektime=0, topchat_only=False, channel_id="") -> str:
+    """
     Parameter
     ---------
     seektime : int
@@ -40,5 +40,5 @@ def getparam(video_id, seektime=0, topchat_only=False, channel_id='') -> str:
         start position of fetching chat data.
     topchat_only : bool
         if True, fetch only 'top chat'
-    '''
+    """
     return _build(video_id, seektime, topchat_only, channel_id)

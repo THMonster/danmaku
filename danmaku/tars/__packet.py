@@ -26,8 +26,8 @@ class RequestPacket(util.struct):
         self.cPacketType = 0
         self.iMessageType = 0
         self.iRequestId = 0
-        self.sServantName = ''
-        self.sFuncName = ''
+        self.sServantName = ""
+        self.sFuncName = ""
         self.sBuffer = bytes()
         self.iTimeout = 0
         self.context = RequestPacket.mapcls_context()
@@ -57,14 +57,12 @@ class RequestPacket(util.struct):
         print(("iMessageType = %d" % value.iMessageType))
         value.iRequestId = ios.read(util.int32, 4, True, 0)
         print(("iRequestId = %d" % value.iRequestId))
-        value.sServantName = ios.read(util.string, 5, True, '22222222')
-        value.sFuncName = ios.read(util.string, 6, True, '')
+        value.sServantName = ios.read(util.string, 5, True, "22222222")
+        value.sFuncName = ios.read(util.string, 6, True, "")
         value.sBuffer = ios.read(util.bytes, 7, True, value.sBuffer)
         value.iTimeout = ios.read(util.int32, 8, True, 0)
-        value.context = ios.read(
-            RequestPacket.mapcls_context, 9, True, value.context)
-        value.status = ios.read(
-            RequestPacket.mapcls_status, 10, True, value.status)
+        value.context = ios.read(RequestPacket.mapcls_context, 9, True, value.context)
+        value.status = ios.read(RequestPacket.mapcls_status, 10, True, value.status)
         return value
 
 

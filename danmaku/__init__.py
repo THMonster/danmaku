@@ -6,36 +6,36 @@ from .bilibili import Bilibili
 from .douyu import Douyu
 from .huya import Huya
 
-__all__     = ['DanmakuClient']
+__all__ = ["DanmakuClient"]
+
 
 class DanmakuClient:
     def __init__(self, url, q, **kargs):
-        self.__url          = ''
-        self.__site         = None
-        self.__usite        = None
-        self.__hs           = None
-        self.__ws           = None
-        self.__stop         = False
-        self.__dm_queue     = q
-        self.__link_status  = True
-        self.__extra_data   = kargs
-        if 'http://' == url[:7] or 'https://' == url[:8]:
+        self.__url = ""
+        self.__site = None
+        self.__usite = None
+        self.__hs = None
+        self.__ws = None
+        self.__stop = False
+        self.__dm_queue = q
+        self.__link_status = True
+        self.__extra_data = kargs
+        if "http://" == url[:7] or "https://" == url[:8]:
             self.__url = url
         else:
-            self.__url = 'http://' + url
-        for u, s in {'douyu.com'         : Douyu,
-                     'live.bilibili.com' : Bilibili,
-                     'twitch.tv'         : Twitch,
-                     'huya.com'          : Huya}.items() :
-            if re.match(r'^(?:http[s]?://)?.*?%s/(.+?)$' % u, url):
+            self.__url = "http://" + url
+        for u, s in {
+            "douyu.com": Douyu,
+            "live.bilibili.com": Bilibili,
+            "twitch.tv": Twitch,
+            "huya.com": Huya,
+        }.items():
+            if re.match(r"^(?:http[s]?://)?.*?%s/(.+?)$" % u, url):
                 self.__site = s
                 break
         if self.__site == None:
-            for u, s in {
-                    'youtube.com/channel': Youtube,
-                    'youtube.com/c': Youtube
-            }.items():
-                if re.match(r'^(?:http[s]?://)?.*?%s/(.+?)$' % u, url):
+            for u, s in {"youtube.com/channel": Youtube, "youtube.com/watch": Youtube}.items():
+                if re.match(r"^(?:http[s]?://)?.*?%s(.+?)$" % u, url):
                     self.__usite = s
             if self.__usite == None:
                 raise Exception("Invalid link!")
@@ -61,7 +61,6 @@ class DanmakuClient:
                     await self.__ws.send_bytes(self.__site.heartbeat)
             except:
                 pass
-
 
     async def fetch_danmaku(self):
         while self.__stop != True:
@@ -90,5 +89,5 @@ class DanmakuClient:
         if self.__site != None:
             await self.__hs.close()
         else:
-            await self.__usite.stop();
+            await self.__usite.stop()
             await self.__hs.close()
