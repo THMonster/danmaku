@@ -19,12 +19,12 @@ class Huya:
             async with session.get(url, headers=headers) as resp:
                 room_page = await resp.text()
                 # print(room_page)
-                m = re.search(r"ayyuid: +'([0-9]+)'", room_page, re.MULTILINE)
-                ayyuid = m.group(1)
-                m = re.search(r"TOPSID += +'([0-9]+)'", room_page, re.MULTILINE)
-                tid = m.group(1)
-                m = re.search(r"SUBSID += +'([0-9]+)'", room_page, re.MULTILINE)
-                sid = m.group(1)
+                m = re.search(r"window.HNF_GLOBAL_INIT *= *(\{.+?\})\s*</script>", room_page, re.MULTILINE)
+                j = json.loads(m.group(1))
+                ayyuid = j["roomInfo"]["tProfileInfo"]["lUid"]
+                tid = j["roomInfo"]["tLiveInfo"]["tLiveStreamInfo"]["vStreamInfo"]["value"][0]["lChannelId"]
+                sid = j["roomInfo"]["tLiveInfo"]["tLiveStreamInfo"]["vStreamInfo"]["value"][0]["lSubChannelId"]
+
                 # print(ayyuid)
                 # print(tid)
                 # print(sid)
