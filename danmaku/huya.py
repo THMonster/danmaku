@@ -22,25 +22,35 @@ class Huya:
                 m = re.search(r"window.HNF_GLOBAL_INIT *= *(\{.+?\})\s*</script>", room_page, re.MULTILINE)
                 j = json.loads(m.group(1))
                 ayyuid = j["roomInfo"]["tProfileInfo"]["lUid"]
-                tid = j["roomInfo"]["tLiveInfo"]["tLiveStreamInfo"]["vStreamInfo"]["value"][0]["lChannelId"]
-                sid = j["roomInfo"]["tLiveInfo"]["tLiveStreamInfo"]["vStreamInfo"]["value"][0]["lSubChannelId"]
+                # tid = j["roomInfo"]["tLiveInfo"]["tLiveStreamInfo"]["vStreamInfo"]["value"][0]["lChannelId"]
+                # sid = j["roomInfo"]["tLiveInfo"]["tLiveStreamInfo"]["vStreamInfo"]["value"][0]["lSubChannelId"]
 
                 # print(ayyuid)
                 # print(tid)
                 # print(sid)
 
+        # a = tarscore.string
+
+        l = tarscore.vctclass(tarscore.string)()
+        l.append(f"live:{ayyuid}")
+        l.append(f"chat:{ayyuid}")
         oos = tarscore.TarsOutputStream()
-        oos.write(tarscore.int64, 0, int(ayyuid))
-        oos.write(tarscore.boolean, 1, True)  # Anonymous
-        oos.write(tarscore.string, 2, "")  # sGuid
-        oos.write(tarscore.string, 3, "")
-        oos.write(tarscore.int64, 4, int(tid))
-        oos.write(tarscore.int64, 5, int(sid))
-        oos.write(tarscore.int64, 6, 0)
-        oos.write(tarscore.int64, 7, 0)
+        oos.write(tarscore.vctclass(tarscore.string), 0, l)
+        oos.write(tarscore.string, 1, "")
+
+        # oos.write(tarscore.int64, 0, int(ayyuid))
+        # oos.write(tarscore.boolean, 1, True)  # Anonymous
+        # oos.write(tarscore.string, 2, "")  # sGuid
+        # oos.write(tarscore.string, 3, "")
+        # oos.write(tarscore.int64, 4, int(tid))
+        # oos.write(tarscore.int64, 5, int(sid))
+        # oos.write(tarscore.int64, 6, 0)
+        # oos.write(tarscore.int64, 7, 0)
+
 
         wscmd = tarscore.TarsOutputStream()
-        wscmd.write(tarscore.int32, 0, 1)
+        wscmd.write(tarscore.int32, 0, 16)
+        # wscmd.write(tarscore.int32, 0, 1)
         wscmd.write(tarscore.bytes, 1, oos.getBuffer())
 
         reg_datas.append(wscmd.getBuffer())
